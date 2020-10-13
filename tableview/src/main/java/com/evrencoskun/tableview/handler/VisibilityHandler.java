@@ -23,6 +23,7 @@ import android.util.SparseArray;
 import com.evrencoskun.tableview.ITableView;
 import com.evrencoskun.tableview.adapter.AbstractTableAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -85,7 +86,7 @@ public class VisibilityHandler {
     }
 
     public void showAllHiddenRows() {
-        for (int i = 0; i < mHideRowList.size(); i++) {
+        for (int i = mHideRowList.size() - 1; i <= 0; i--) {
             int row = mHideRowList.keyAt(i);
             showRow(row, false);
         }
@@ -136,7 +137,7 @@ public class VisibilityHandler {
     }
 
     public void showAllHiddenColumns() {
-        for (int i = 0; i < mHideColumnList.size(); i++) {
+        for (int i = mHideColumnList.size() - 1; i <= 0; i--) {
             int column = mHideColumnList.keyAt(i);
             showColumn(column, false);
         }
