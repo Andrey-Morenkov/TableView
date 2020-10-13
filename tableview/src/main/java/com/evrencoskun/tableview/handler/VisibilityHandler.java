@@ -61,6 +61,19 @@ public class VisibilityHandler {
         }
     }
 
+    public void hideRows(List<Integer> rows) {
+        for (Integer row: rows) {
+            if (mHideRowList.get(row) == null) {
+                // add row the list
+                mHideRowList.put(row, getRowValueFromPosition(row));
+            } else {
+                Log.e(LOG_TAG, "This row (" + row + ") is already hidden.");
+            }
+        }
+
+        mTableView.getAdapter().removeRows(rows);
+    }
+
     public void showRow(int row) {
         showRow(row, true);
     }
@@ -86,7 +99,7 @@ public class VisibilityHandler {
     }
 
     public void showAllHiddenRows() {
-        for (int i = mHideRowList.size() - 1; i <= 0; i--) {
+        for (int i = 0; i < mHideRowList.size(); i++) {
             int row = mHideRowList.keyAt(i);
             showRow(row, false);
         }
@@ -110,6 +123,19 @@ public class VisibilityHandler {
         } else {
             Log.e(LOG_TAG, "This column is already hidden.");
         }
+    }
+
+    public void hideColumns(List<Integer> columns) {
+        for (Integer col: columns) {
+            if (mHideColumnList.get(col) == null) {
+                // add column the list
+                mHideColumnList.put(col, getColumnValueFromPosition(col));
+            } else {
+                Log.e(LOG_TAG, "This column (" + col + ") is already hidden.");
+            }
+        }
+
+        mTableView.getAdapter().removeColumns(columns);
     }
 
     public void showColumn(int column) {
@@ -137,7 +163,7 @@ public class VisibilityHandler {
     }
 
     public void showAllHiddenColumns() {
-        for (int i = mHideColumnList.size() - 1; i <= 0; i--) {
+        for (int i = 0; i < mHideColumnList.size(); i++) {
             int column = mHideColumnList.keyAt(i);
             showColumn(column, false);
         }

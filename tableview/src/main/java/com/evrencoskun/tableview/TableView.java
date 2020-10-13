@@ -56,6 +56,8 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import java.util.List;
+
 /**
  * Created by evrencoskun on 11/06/2017.
  */
@@ -544,6 +546,12 @@ public class TableView extends FrameLayout implements ITableView {
     }
 
     @Override
+    public void hideRows(List<Integer> rows)
+    {
+        mVisibilityHandler.hideRows(rows);
+    }
+
+    @Override
     public void showAllHiddenRows() {
         mVisibilityHandler.showAllHiddenRows();
     }
@@ -561,6 +569,12 @@ public class TableView extends FrameLayout implements ITableView {
     @Override
     public void hideColumn(int column) {
         mVisibilityHandler.hideColumn(column);
+    }
+
+    @Override
+    public void hideColumns(List<Integer> columns)
+    {
+        mVisibilityHandler.hideColumns(columns);
     }
 
     @Override

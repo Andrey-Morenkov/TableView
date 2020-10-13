@@ -18,6 +18,7 @@
 package com.evrencoskun.tableview.adapter.recyclerview;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -35,6 +36,7 @@ import com.evrencoskun.tableview.layoutmanager.ColumnLayoutManager;
 import com.evrencoskun.tableview.listener.itemclick.CellRecyclerViewItemClickListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -247,6 +249,44 @@ public class CellRecyclerViewAdapter<C> extends AbstractRecyclerViewAdapter<C> {
 
             if (rowList.size() > column) {
                 rowList.remove(column);
+            }
+
+            cellItems.add(rowList);
+        }
+
+        // Change data without notifying. Because we already did for visible recyclerViews.
+        setItems((List<C>) cellItems, false);
+    }
+
+    public void removeColumnsItems(List<Integer> columns) {
+        // Firstly, remove columns from visible recyclerViews.
+        // To be able provide removing animation, we need to notify just for given column position.
+        CellRecyclerView[] visibleRecyclerViews = mTableView.getCellLayoutManager()
+                .getVisibleCellRowRecyclerViews();
+
+        for (CellRecyclerView cellRowRecyclerView : visibleRecyclerViews) {
+            if (cellRowRecyclerView != null) {
+                AbstractRecyclerViewAdapter adapter = (AbstractRecyclerViewAdapter) cellRowRecyclerView.getAdapter();
+                if (adapter != null) {
+                    adapter.deleteItems(columns);
+                }
+            }
+        }
+
+        // Lets change the model list silently
+        // Create a new list which the column is already removed.
+        List<List<C>> cellItems = new ArrayList<>();
+        for (int i = 0; i < mItemList.size(); i++) {
+            List<C> rowList = new ArrayList<>((List<C>) mItemList.get(i));
+
+            Collections.sort(columns);
+            Collections.sort(columns, Collections.reverseOrder());
+            for (Integer colToRemove: columns) {
+                try {
+                    rowList.remove(colToRemove.intValue());
+                } catch (IndexOutOfBoundsException e) {
+                    Log.w("TAG", "try to remove");
+                }
             }
 
             cellItems.add(rowList);

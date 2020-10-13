@@ -210,6 +210,11 @@ public abstract class AbstractTableAdapter<CH, RH, C> implements ITableAdapter<C
         mRowHeaderRecyclerViewAdapter.deleteItem(rowPosition);
     }
 
+    public void removeRows(List<Integer> rowPositions) {
+        mCellRecyclerViewAdapter.deleteItems(rowPositions);
+        mRowHeaderRecyclerViewAdapter.deleteItems(rowPositions);
+    }
+
     public void removeRow(int rowPosition, boolean updateRowHeader) {
         mCellRecyclerViewAdapter.deleteItem(rowPosition);
 
@@ -291,6 +296,11 @@ public abstract class AbstractTableAdapter<CH, RH, C> implements ITableAdapter<C
     public void removeColumn(int columnPosition) {
         mColumnHeaderRecyclerViewAdapter.deleteItem(columnPosition);
         mCellRecyclerViewAdapter.removeColumnItems(columnPosition);
+    }
+
+    public void removeColumns(List<Integer> columnsPositions) {
+        mColumnHeaderRecyclerViewAdapter.deleteItems(columnsPositions);
+        mCellRecyclerViewAdapter.removeColumnsItems(columnsPositions);
     }
 
     public void addColumn(int columnPosition, @Nullable CH columnHeaderItem, @NonNull List<C> cellItems) {

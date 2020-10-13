@@ -26,6 +26,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractViewHolder;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -91,6 +93,22 @@ public abstract class AbstractRecyclerViewAdapter<T> extends RecyclerView
         if (position != RecyclerView.NO_POSITION) {
             mItemList.remove(position);
             notifyItemRemoved(position);
+        }
+    }
+
+    public void deleteItems(List<Integer> positions) {
+        Collections.sort(positions);
+        Collections.reverse(positions);
+        int currPos = 0;
+        for (int i = mItemList.size() - 1; i >= 0; i--) {
+            if (i == positions.get(currPos)) {
+                mItemList.remove(i);
+                notifyItemRemoved(i);
+                currPos++;
+                if (currPos == positions.size()) {
+                    break;
+                }
+            }
         }
     }
 
