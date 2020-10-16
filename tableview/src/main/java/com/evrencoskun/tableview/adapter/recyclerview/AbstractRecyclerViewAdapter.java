@@ -18,6 +18,7 @@
 package com.evrencoskun.tableview.adapter.recyclerview;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -97,11 +98,13 @@ public abstract class AbstractRecyclerViewAdapter<T> extends RecyclerView
     }
 
     public void deleteItems(List<Integer> positions) {
+        Log.e("AbstractRecycler", "deleting items...");
         Collections.sort(positions);
         Collections.reverse(positions);
         int currPos = 0;
         for (int i = mItemList.size() - 1; i >= 0; i--) {
             if (i == positions.get(currPos)) {
+                Log.e("AbstractRecycler", "remove " + i + " column");
                 mItemList.remove(i);
                 notifyItemRemoved(i);
                 currPos++;
@@ -123,6 +126,7 @@ public abstract class AbstractRecyclerViewAdapter<T> extends RecyclerView
     }
 
     public void addItem(int position, @Nullable T item) {
+        Log.e("AbstractRecycler", "add item to position " + position);
         if (position != RecyclerView.NO_POSITION && item != null) {
             mItemList.add(position, item);
             notifyItemInserted(position);

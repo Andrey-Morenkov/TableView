@@ -18,6 +18,7 @@
 package com.evrencoskun.tableview.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -299,12 +300,16 @@ public abstract class AbstractTableAdapter<CH, RH, C> implements ITableAdapter<C
     }
 
     public void removeColumns(List<Integer> columnsPositions) {
+        Log.e("ColumnHeaderRecycler", "removing columns...");
         mColumnHeaderRecyclerViewAdapter.deleteItems(columnsPositions);
+        Log.e("mCellRecycler", "removing columns...");
         mCellRecyclerViewAdapter.removeColumnsItems(columnsPositions);
     }
 
     public void addColumn(int columnPosition, @Nullable CH columnHeaderItem, @NonNull List<C> cellItems) {
+        Log.e("ColumnHeaderRecycler", "add column... (" + columnPosition + " position)");
         mColumnHeaderRecyclerViewAdapter.addItem(columnPosition, columnHeaderItem);
+        Log.e("mCellRecycler", "add column... (" + columnPosition + " position)");
         mCellRecyclerViewAdapter.addColumnItems(columnPosition, cellItems);
     }
 

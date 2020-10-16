@@ -264,12 +264,15 @@ public class CellRecyclerViewAdapter<C> extends AbstractRecyclerViewAdapter<C> {
         CellRecyclerView[] visibleRecyclerViews = mTableView.getCellLayoutManager()
                 .getVisibleCellRowRecyclerViews();
 
+        int j = 0;
         for (CellRecyclerView cellRowRecyclerView : visibleRecyclerViews) {
             if (cellRowRecyclerView != null) {
                 AbstractRecyclerViewAdapter adapter = (AbstractRecyclerViewAdapter) cellRowRecyclerView.getAdapter();
                 if (adapter != null) {
+                    Log.e("CellsRecycler", "remove columns in " + j + " recycler");
                     adapter.deleteItems(columns);
                 }
+                j++;
             }
         }
 
@@ -278,14 +281,16 @@ public class CellRecyclerViewAdapter<C> extends AbstractRecyclerViewAdapter<C> {
         List<List<C>> cellItems = new ArrayList<>();
         for (int i = 0; i < mItemList.size(); i++) {
             List<C> rowList = new ArrayList<>((List<C>) mItemList.get(i));
+            Log.e("CellsRecycler", "pick " + i + " row (" + rowList.size() + " elements)");
 
             Collections.sort(columns);
-            Collections.sort(columns, Collections.reverseOrder());
+            Collections.reverse(columns);
             for (Integer colToRemove: columns) {
+                Log.e("CellsRecycler", "remove " + colToRemove + " column item");
                 try {
                     rowList.remove(colToRemove.intValue());
                 } catch (IndexOutOfBoundsException e) {
-                    Log.w("TAG", "try to remove");
+                    Log.w("TAG", "try to remove " + colToRemove + " element, but size is " + rowList.size());
                 }
             }
 
@@ -297,22 +302,24 @@ public class CellRecyclerViewAdapter<C> extends AbstractRecyclerViewAdapter<C> {
     }
 
     public void addColumnItems(int column, @NonNull List<C> cellColumnItems) {
+        Log.e("CellsRecycler", "adding column items to " + column + " column");
+
         // It should be same size with exist model list.
         if (cellColumnItems.size() != mItemList.size() || cellColumnItems.contains(null)) {
+            Log.e("CellsRecycler", "something bad happened");
             return;
         }
 
         // Firstly, add columns from visible recyclerViews.
         // To be able provide removing animation, we need to notify just for given column position.
         CellLayoutManager layoutManager = mTableView.getCellLayoutManager();
-        for (int i = layoutManager.findFirstVisibleItemPosition(); i < layoutManager
-                .findLastVisibleItemPosition() + 1; i++) {
+        for (int i = layoutManager.findFirstVisibleItemPosition(); i < layoutManager.findLastVisibleItemPosition() + 1; i++) {
             // Get the cell row recyclerView that is located on i position
             RecyclerView cellRowRecyclerView = (RecyclerView) layoutManager.findViewByPosition(i);
+            Log.e("CellsRecycler", "found row recycler view (" + i + " position)");
 
             // Add the item using its adapter.
-            ((AbstractRecyclerViewAdapter) cellRowRecyclerView.getAdapter()).addItem(column,
-                    cellColumnItems.get(i));
+            ((AbstractRecyclerViewAdapter) cellRowRecyclerView.getAdapter()).addItem(column, cellColumnItems.get(i));
         }
 
 
@@ -320,9 +327,24 @@ public class CellRecyclerViewAdapter<C> extends AbstractRecyclerViewAdapter<C> {
         List<List<C>> cellItems = new ArrayList<>();
         for (int i = 0; i < mItemList.size(); i++) {
             List<C> rowList = new ArrayList<>((List<C>) mItemList.get(i));
+            Log.e("CellsRecycler", "pick " + i + " row (" + rowList.size() + " elements)");
 
-            if (rowList.size() > column) {
-                rowList.add(column, cellColumnItems.get(i));
+            if (column - rowList.size() <= 1)
+            {
+                if (column - rowList.size() == 1)
+                {
+                    Log.e("CellsRecycler", "add column (new last) element");
+                    rowList.add(cellColumnItems.get(i));
+                }
+                else
+                {
+                    Log.e("CellsRecycler", "add column (" + column + ") element");
+                    rowList.add(column, cellColumnItems.get(i));
+                }
+            }
+            else
+            {
+                Log.e("CellsRecycler", "NOT ADDED ELEMENT, WHY? rowList.size = " + rowList.size() + ", column = " + column);
             }
 
             cellItems.add(rowList);

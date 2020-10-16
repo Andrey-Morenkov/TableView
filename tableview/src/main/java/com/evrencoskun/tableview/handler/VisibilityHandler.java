@@ -126,9 +126,11 @@ public class VisibilityHandler {
     }
 
     public void hideColumns(List<Integer> columns) {
+        Log.e(LOG_TAG, "need to hide columns ( " + columns.size() + "): " + columns.toString());
         for (Integer col: columns) {
             if (mHideColumnList.get(col) == null) {
                 // add column the list
+                Log.e(LOG_TAG, "Backup " + col + " column...");
                 mHideColumnList.put(col, getColumnValueFromPosition(col));
             } else {
                 Log.e(LOG_TAG, "This column (" + col + ") is already hidden.");
@@ -136,6 +138,7 @@ public class VisibilityHandler {
         }
 
         mTableView.getAdapter().removeColumns(columns);
+        Log.e(LOG_TAG, "columns hided");
     }
 
     public void showColumn(int column) {
@@ -143,6 +146,7 @@ public class VisibilityHandler {
     }
 
     private void showColumn(int column, boolean removeFromList) {
+        Log.e(LOG_TAG, "need to show " + column + " column");
         Column hiddenColumn = mHideColumnList.get(column);
 
         if (hiddenColumn != null) {
@@ -163,12 +167,14 @@ public class VisibilityHandler {
     }
 
     public void showAllHiddenColumns() {
+        Log.e(LOG_TAG, "show all hided columns (" + mHideColumnList.size() + ")");
         for (int i = 0; i < mHideColumnList.size(); i++) {
             int column = mHideColumnList.keyAt(i);
             showColumn(column, false);
         }
 
         clearHideColumnList();
+        Log.e(LOG_TAG, "all hided columns showed");
     }
 
     public boolean isColumnVisible(int column) {
