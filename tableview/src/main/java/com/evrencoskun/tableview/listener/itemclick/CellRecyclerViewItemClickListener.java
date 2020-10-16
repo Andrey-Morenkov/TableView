@@ -17,6 +17,7 @@
 
 package com.evrencoskun.tableview.listener.itemclick;
 
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -64,6 +65,7 @@ public class CellRecyclerViewItemClickListener extends AbstractItemClickListener
             }
 
             // Call ITableView listener for item click
+            Log.e("123", "ON CELL CLICKED");
             getTableViewListener().onCellClicked(holder, column, row);
 
             return true;
