@@ -73,6 +73,8 @@ public class VisibilityHandler {
             }
         }
 
+        Log.e(LOG_TAG, "add rows to hide row list: " + rows.toString());
+
         // remove row models from adapter
         mTableView.getAdapter().removeSortedRows(rows);
     }
@@ -102,6 +104,7 @@ public class VisibilityHandler {
     }
 
     public void showAllHiddenRows() {
+        Log.e(LOG_TAG, "show all hidden rows (" + mHideRowList.size() + ")");
         for (int i = 0; i < mHideRowList.size(); i++) {
             int row = mHideRowList.keyAt(i);
             showRow(row, false);
@@ -137,6 +140,8 @@ public class VisibilityHandler {
                 Log.e(LOG_TAG, "This column (" + column + ") is already hidden.");
             }
         }
+
+        Log.e(LOG_TAG, "add columns to hide column list: " + columns.toString());
 
         // remove column models from adapter
         mTableView.getAdapter().removeSortedColumns(columns);
@@ -201,8 +206,10 @@ public class VisibilityHandler {
             columnsToShow.add(mHideColumnList.keyAt(i));
         }
 
+        Log.e(LOG_TAG, "show all hidden columns (" + columnsToShow.size() + ")");
+
         Collections.sort(columnsToShow);
-        showSortedColumns(columnsToShow);
+        showSortedColumns(columnsToShow, false);
         clearHideColumnList();
     }
 

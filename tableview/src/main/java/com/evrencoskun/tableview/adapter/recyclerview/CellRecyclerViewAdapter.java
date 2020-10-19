@@ -253,20 +253,22 @@ public class CellRecyclerViewAdapter<C> extends AbstractRecyclerViewAdapter<C> {
     }
 
     public void removeSortedColumnItems(List<Integer> columns) {
-
         // Firstly, remove columns from visible recyclerViews.
         // To be able provide removing animation, we need to notify just for given column position.
 
-        CellRecyclerView[] visibleRecyclerViews = mTableView.getCellLayoutManager()
-                .getVisibleCellRowRecyclerViews();
+        CellRecyclerView[] visibleRecyclerViews = mTableView.getCellLayoutManager().getVisibleCellRowRecyclerViews();
 
+        int k = 0;
         for (CellRecyclerView cellRowRecyclerView : visibleRecyclerViews) {
+            Log.e("CellRVAdapter", "pick cell row recycle adapter: " + k);
             if (cellRowRecyclerView != null) {
                 AbstractRecyclerViewAdapter adapter = (AbstractRecyclerViewAdapter) cellRowRecyclerView.getAdapter();
                 if (adapter != null) {
+                    Log.e("CellRVAdapter", "delete all items from " + k + " row adapter");
                     adapter.deleteSortedItems(columns);
                 }
             }
+            k++;
         }
 
         // Lets change the model list silently
@@ -274,11 +276,13 @@ public class CellRecyclerViewAdapter<C> extends AbstractRecyclerViewAdapter<C> {
         List<List<C>> cellItems = new ArrayList<>();
         for (int i = 0; i < mItemList.size(); i++) {
             List<C> rowList = new ArrayList<>((List<C>) mItemList.get(i));
+            Log.e("CellRVAdapter", "get " + i + " row (" + rowList.size() + ") in item list");
 
             Collections.reverse(columns);
             for (int colToRemove: columns) {
                 try {
                     rowList.remove(colToRemove);
+                    Log.e("CellRVAdapter", "remove " + colToRemove + " column");
                 } catch (IndexOutOfBoundsException e) {
                     Log.e("CellRecyclerViewAdapter", "try to remove " + colToRemove + " column, but size is " + rowList.size());
                 }
@@ -331,6 +335,7 @@ public class CellRecyclerViewAdapter<C> extends AbstractRecyclerViewAdapter<C> {
 
         // It should be same size with exist model list.
         if (firstColumnInfo.size() != mItemList.size() || firstColumnInfo.contains(null)) {
+            Log.e("CellRVAdapter", "firstColumnInfo.size() = " + firstColumnInfo.size() + " != " + mItemList.size());
             return;
         }
 
@@ -340,12 +345,14 @@ public class CellRecyclerViewAdapter<C> extends AbstractRecyclerViewAdapter<C> {
         for (int i = layoutManager.findFirstVisibleItemPosition(); i < layoutManager.findLastVisibleItemPosition() + 1; i++) {
             // Get the cell row recyclerView that is located on i position
             RecyclerView cellRowRecyclerView = (RecyclerView) layoutManager.findViewByPosition(i);
+            Log.e("CellRVAdapter", "pick cellRowRecyclerView " + i);
 
             Map<Integer, C> itemsByPositions = new TreeMap<>();
             for (Map.Entry<Integer, List<C>> entry: cellColumnsInfo.entrySet()) {
                 itemsByPositions.put(entry.getKey(), entry.getValue().get(i));
             }
 
+            Log.e("CellRVAdapter", "add items (" + itemsByPositions.entrySet().size() + ")");
             // Add the item using its adapter.
             ((AbstractRecyclerViewAdapter) cellRowRecyclerView.getAdapter()).addItems(itemsByPositions);
         }
@@ -354,6 +361,7 @@ public class CellRecyclerViewAdapter<C> extends AbstractRecyclerViewAdapter<C> {
         List<List<C>> cellItems = new ArrayList<>(mItemList.size());
         for (int i = 0; i < mItemList.size(); i++) {
             List<C> rowList = new ArrayList<>((List<C>) mItemList.get(i));
+            Log.e("CellRVAdapter", "pick row " + i + ", size = " + rowList.size());
 
             Map<Integer, C> itemsByPositions = new TreeMap<>();
             for (Map.Entry<Integer, List<C>> entry: cellColumnsInfo.entrySet()) {
@@ -361,16 +369,20 @@ public class CellRecyclerViewAdapter<C> extends AbstractRecyclerViewAdapter<C> {
             }
 
             for (Map.Entry<Integer, C> entry: itemsByPositions.entrySet()) {
+                Log.e("CellRVAdapter", "add item " + entry.getKey());
                 if (entry.getKey() - rowList.size() == 1) {
                     // Add entry value to the end of rowList
                     rowList.add(entry.getValue());
+                    Log.e("CellRVAdapter", "to last position, new size = " + rowList.size());
                     break;
                 }
                 if (rowList.size() >= entry.getKey()) {
                     rowList.add(entry.getKey(), entry.getValue());
+                    Log.e("CellRVAdapter", "to " + entry.getKey() + " position, new size = " + rowList.size());
                 }
             }
 
+            Log.e("CellRVAdapter", "new rowSize = " + rowList.size());
             cellItems.add(rowList);
         }
 

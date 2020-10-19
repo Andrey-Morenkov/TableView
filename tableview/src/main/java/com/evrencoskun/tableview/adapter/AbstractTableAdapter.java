@@ -18,6 +18,7 @@
 package com.evrencoskun.tableview.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
@@ -301,8 +302,11 @@ public abstract class AbstractTableAdapter<CH, RH, C> implements ITableAdapter<C
     }
 
     public void removeSortedColumns(List<Integer> columnsPositions) {
+        Log.e("AbstractTAdapter", "removing column headers...");
         mColumnHeaderRecyclerViewAdapter.deleteSortedItems(columnsPositions);
+        Log.e("AbstractTAdapter", "removing cells...");
         mCellRecyclerViewAdapter.removeSortedColumnItems(columnsPositions);
+        Log.e("AbstractTAdapter", "removeSortedColumns DONE");
     }
 
     public void addColumn(int columnPosition, @Nullable CH columnHeaderItem, @NonNull List<C> cellItems) {
@@ -311,8 +315,11 @@ public abstract class AbstractTableAdapter<CH, RH, C> implements ITableAdapter<C
     }
 
     public void addSortedColumns(Map<Integer, CH> sortedColumnHeaderItems, Map<Integer, List<C>> sortedColumnCellItems) {
+        Log.e("AbstractTAdapter", "adding column headers...");
         mColumnHeaderRecyclerViewAdapter.addItems(sortedColumnHeaderItems);
+        Log.e("AbstractTAdapter", "adding cells...");
         mCellRecyclerViewAdapter.addColumnsItems(sortedColumnCellItems);
+        Log.e("AbstractTAdapter", "addSortedColumns DONE");
     }
 
 
