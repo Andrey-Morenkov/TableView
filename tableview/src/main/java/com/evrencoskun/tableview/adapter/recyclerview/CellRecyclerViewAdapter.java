@@ -18,6 +18,7 @@
 package com.evrencoskun.tableview.adapter.recyclerview;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -35,7 +36,10 @@ import com.evrencoskun.tableview.layoutmanager.ColumnLayoutManager;
 import com.evrencoskun.tableview.listener.itemclick.CellRecyclerViewItemClickListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Created by evrencoskun on 10/06/2017.
@@ -248,6 +252,45 @@ public class CellRecyclerViewAdapter<C> extends AbstractRecyclerViewAdapter<C> {
         setItems((List<C>) cellItems, false);
     }
 
+    public void removeSortedColumnItems(List<Integer> columns) {
+
+        // Firstly, remove columns from visible recyclerViews.
+        // To be able provide removing animation, we need to notify just for given column position.
+
+        CellRecyclerView[] visibleRecyclerViews = mTableView.getCellLayoutManager()
+                .getVisibleCellRowRecyclerViews();
+
+        for (CellRecyclerView cellRowRecyclerView : visibleRecyclerViews) {
+            if (cellRowRecyclerView != null) {
+                AbstractRecyclerViewAdapter adapter = (AbstractRecyclerViewAdapter) cellRowRecyclerView.getAdapter();
+                if (adapter != null) {
+                    adapter.deleteSortedItems(columns);
+                }
+            }
+        }
+
+        // Lets change the model list silently
+        // Create a new list which the column is already removed.
+        List<List<C>> cellItems = new ArrayList<>();
+        for (int i = 0; i < mItemList.size(); i++) {
+            List<C> rowList = new ArrayList<>((List<C>) mItemList.get(i));
+
+            Collections.reverse(columns);
+            for (int colToRemove: columns) {
+                try {
+                    rowList.remove(colToRemove);
+                } catch (IndexOutOfBoundsException e) {
+                    Log.e("CellRecyclerViewAdapter", "try to remove " + colToRemove + " column, but size is " + rowList.size());
+                }
+            }
+
+            cellItems.add(rowList);
+        }
+
+        // Change data without notifying. Because we already did for visible recyclerViews.
+        setItems((List<C>) cellItems, false);
+    }
+
     public void addColumnItems(int column, @NonNull List<C> cellColumnItems) {
         // It should be same size with exist model list.
         if (cellColumnItems.size() != mItemList.size() || cellColumnItems.contains(null)) {
@@ -257,8 +300,7 @@ public class CellRecyclerViewAdapter<C> extends AbstractRecyclerViewAdapter<C> {
         // Firstly, add columns from visible recyclerViews.
         // To be able provide removing animation, we need to notify just for given column position.
         CellLayoutManager layoutManager = mTableView.getCellLayoutManager();
-        for (int i = layoutManager.findFirstVisibleItemPosition(); i < layoutManager
-                .findLastVisibleItemPosition() + 1; i++) {
+        for (int i = layoutManager.findFirstVisibleItemPosition(); i < layoutManager.findLastVisibleItemPosition() + 1; i++) {
             // Get the cell row recyclerView that is located on i position
             RecyclerView cellRowRecyclerView = (RecyclerView) layoutManager.findViewByPosition(i);
 
@@ -275,6 +317,58 @@ public class CellRecyclerViewAdapter<C> extends AbstractRecyclerViewAdapter<C> {
 
             if (rowList.size() > column) {
                 rowList.add(column, cellColumnItems.get(i));
+            }
+
+            cellItems.add(rowList);
+        }
+
+        // Change data without notifying. Because we already did for visible recyclerViews.
+        setItems((List<C>) cellItems, false);
+    }
+
+    public void addColumnsItems(Map<Integer, List<C>> cellColumnsInfo) {
+        List<C> firstColumnInfo = cellColumnsInfo.values().iterator().next();
+
+        // It should be same size with exist model list.
+        if (firstColumnInfo.size() != mItemList.size() || firstColumnInfo.contains(null)) {
+            return;
+        }
+
+        // Firstly, add columns from visible recyclerViews.
+        // To be able provide removing animation, we need to notify just for given column position.
+        CellLayoutManager layoutManager = mTableView.getCellLayoutManager();
+        for (int i = layoutManager.findFirstVisibleItemPosition(); i < layoutManager.findLastVisibleItemPosition() + 1; i++) {
+            // Get the cell row recyclerView that is located on i position
+            RecyclerView cellRowRecyclerView = (RecyclerView) layoutManager.findViewByPosition(i);
+
+            Map<Integer, C> itemsByPositions = new TreeMap<>();
+            for (Map.Entry<Integer, List<C>> entry: cellColumnsInfo.entrySet()) {
+                itemsByPositions.put(entry.getKey(), entry.getValue().get(i));
+            }
+
+            // Add the item using its adapter.
+            ((AbstractRecyclerViewAdapter) cellRowRecyclerView.getAdapter()).addItems(itemsByPositions);
+        }
+
+        // Lets change the model list silently
+        List<List<C>> cellItems = new ArrayList<>(mItemList.size());
+        for (int i = 0; i < mItemList.size(); i++) {
+            List<C> rowList = new ArrayList<>((List<C>) mItemList.get(i));
+
+            Map<Integer, C> itemsByPositions = new TreeMap<>();
+            for (Map.Entry<Integer, List<C>> entry: cellColumnsInfo.entrySet()) {
+                itemsByPositions.put(entry.getKey(), entry.getValue().get(i));
+            }
+
+            for (Map.Entry<Integer, C> entry: itemsByPositions.entrySet()) {
+                if (entry.getKey() - rowList.size() == 1) {
+                    // Add entry value to the end of rowList
+                    rowList.add(entry.getValue());
+                    break;
+                }
+                if (rowList.size() >= entry.getKey()) {
+                    rowList.add(entry.getKey(), entry.getValue());
+                }
             }
 
             cellItems.add(rowList);

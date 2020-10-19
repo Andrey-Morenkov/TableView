@@ -18,11 +18,15 @@
 package com.evrencoskun.tableview.handler;
 
 import android.util.Log;
+import android.util.Pair;
 import android.util.SparseArray;
 
 import com.evrencoskun.tableview.ITableView;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.TreeMap;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -57,6 +61,20 @@ public class VisibilityHandler {
         } else {
             Log.e(LOG_TAG, "This row is already hidden.");
         }
+    }
+
+    public void hideSortedRows(List<Integer> rows) {
+        for (int row: rows) {
+            if (mHideRowList.get(row) == null) {
+                // add row the list
+                mHideRowList.put(row, getRowValueFromPosition(row));
+            } else {
+                Log.e(LOG_TAG, "This row (" + row + ") is already hidden.");
+            }
+        }
+
+        // remove row models from adapter
+        mTableView.getAdapter().removeSortedRows(rows);
     }
 
     public void showRow(int row) {
@@ -110,6 +128,20 @@ public class VisibilityHandler {
         }
     }
 
+    public void hideSortedColumns(List<Integer> columns) {
+        for (int column: columns) {
+            if (mHideColumnList.get(column) == null) {
+                // add column the list
+                mHideColumnList.put(column, getColumnValueFromPosition(column));
+            } else {
+                Log.e(LOG_TAG, "This column (" + column + ") is already hidden.");
+            }
+        }
+
+        // remove column models from adapter
+        mTableView.getAdapter().removeSortedColumns(columns);
+    }
+
     public void showColumn(int column) {
         showColumn(column, true);
     }
@@ -130,16 +162,47 @@ public class VisibilityHandler {
         }
     }
 
+    public void showSortedColumns(List<Integer> columns) {
+        showSortedColumns(columns, true);
+    }
+
+    private void showSortedColumns(List<Integer> columns, boolean removeFromList) {
+        TreeMap<Integer, Object> hiddenColumnsHeaderInfo = new TreeMap<>();
+        TreeMap<Integer, List<Object>> hiddenColumnsCellsInfo = new TreeMap<>();
+
+        for (int col: columns) {
+            Column hiddenColumn = mHideColumnList.get(col);
+            if (hiddenColumn != null) {
+                hiddenColumnsHeaderInfo.put(col, hiddenColumn.getColumnHeaderModel());
+                hiddenColumnsCellsInfo.put(col, hiddenColumn.getCellModelList());
+            } else {
+                Log.e(LOG_TAG, "This column (" + col + ")is already visible.");
+            }
+        }
+
+        // add columns model to the adapter
+        mTableView.getAdapter().addSortedColumns(hiddenColumnsHeaderInfo, hiddenColumnsCellsInfo);
+
+        if (removeFromList) {
+            Collections.reverse(columns);
+            for (int col: columns) {
+                mHideColumnList.remove(col);
+            }
+        }
+    }
+
     public void clearHideColumnList() {
         mHideColumnList.clear();
     }
 
     public void showAllHiddenColumns() {
+        List<Integer> columnsToShow = new ArrayList<>(mHideColumnList.size());
         for (int i = 0; i < mHideColumnList.size(); i++) {
-            int column = mHideColumnList.keyAt(i);
-            showColumn(column, false);
+            columnsToShow.add(mHideColumnList.keyAt(i));
         }
 
+        Collections.sort(columnsToShow);
+        showSortedColumns(columnsToShow);
         clearHideColumnList();
     }
 

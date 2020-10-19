@@ -26,7 +26,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractViewHolder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by evrencoskun on 10/06/2017.
@@ -94,6 +96,22 @@ public abstract class AbstractRecyclerViewAdapter<T> extends RecyclerView
         }
     }
 
+    public void deleteSortedItems(List<Integer> positions) {
+        Collections.reverse(positions);
+
+        int currPositionsPos = 0;
+        for (int i = mItemList.size() - 1; i >= 0; i--) {
+            if (i == positions.get(currPositionsPos)) {
+                mItemList.remove(i);
+                notifyItemRemoved(i);
+                currPositionsPos++;
+                if (currPositionsPos == positions.size()) {
+                    break;
+                }
+            }
+        }
+    }
+
     public void deleteItemRange(int positionStart, int itemCount) {
         for (int i = positionStart + itemCount - 1; i >= positionStart; i--) {
             if (i != RecyclerView.NO_POSITION) {
@@ -108,6 +126,15 @@ public abstract class AbstractRecyclerViewAdapter<T> extends RecyclerView
         if (position != RecyclerView.NO_POSITION && item != null) {
             mItemList.add(position, item);
             notifyItemInserted(position);
+        }
+    }
+
+    public void addItems(Map<Integer, T> positionsWithItems) {
+        for (Map.Entry<Integer, T> positionAndItem: positionsWithItems.entrySet()) {
+            if (positionAndItem.getKey() != RecyclerView.NO_POSITION) {
+                mItemList.add(positionAndItem.getKey(), positionAndItem.getValue());
+                notifyItemInserted(positionAndItem.getKey());
+            }
         }
     }
 

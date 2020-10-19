@@ -18,6 +18,7 @@
 package com.evrencoskun.tableview.adapter;
 
 import android.content.Context;
+import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -32,6 +33,7 @@ import com.evrencoskun.tableview.adapter.recyclerview.RowHeaderRecyclerViewAdapt
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by evrencoskun on 10/06/2017.
@@ -210,6 +212,11 @@ public abstract class AbstractTableAdapter<CH, RH, C> implements ITableAdapter<C
         mRowHeaderRecyclerViewAdapter.deleteItem(rowPosition);
     }
 
+    public void removeSortedRows(List<Integer> rowsPositions) {
+        mCellRecyclerViewAdapter.deleteSortedItems(rowsPositions);
+        mRowHeaderRecyclerViewAdapter.deleteSortedItems(rowsPositions);
+    }
+
     public void removeRow(int rowPosition, boolean updateRowHeader) {
         mCellRecyclerViewAdapter.deleteItem(rowPosition);
 
@@ -293,9 +300,19 @@ public abstract class AbstractTableAdapter<CH, RH, C> implements ITableAdapter<C
         mCellRecyclerViewAdapter.removeColumnItems(columnPosition);
     }
 
+    public void removeSortedColumns(List<Integer> columnsPositions) {
+        mColumnHeaderRecyclerViewAdapter.deleteSortedItems(columnsPositions);
+        mCellRecyclerViewAdapter.removeSortedColumnItems(columnsPositions);
+    }
+
     public void addColumn(int columnPosition, @Nullable CH columnHeaderItem, @NonNull List<C> cellItems) {
         mColumnHeaderRecyclerViewAdapter.addItem(columnPosition, columnHeaderItem);
         mCellRecyclerViewAdapter.addColumnItems(columnPosition, cellItems);
+    }
+
+    public void addSortedColumns(Map<Integer, CH> sortedColumnHeaderItems, Map<Integer, List<C>> sortedColumnCellItems) {
+        mColumnHeaderRecyclerViewAdapter.addItems(sortedColumnHeaderItems);
+        mCellRecyclerViewAdapter.addColumnsItems(sortedColumnCellItems);
     }
 
 

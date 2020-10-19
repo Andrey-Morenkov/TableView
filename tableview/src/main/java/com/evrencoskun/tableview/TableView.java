@@ -56,6 +56,9 @@ import com.evrencoskun.tableview.listener.scroll.VerticalRecyclerViewListener;
 import com.evrencoskun.tableview.preference.SavedState;
 import com.evrencoskun.tableview.sort.SortState;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Created by evrencoskun on 11/06/2017.
  */
@@ -545,6 +548,13 @@ public class TableView extends FrameLayout implements ITableView {
     }
 
     @Override
+    public void hideRows(List<Integer> rows)
+    {
+        Collections.sort(rows);
+        mVisibilityHandler.hideSortedRows(rows);
+    }
+
+    @Override
     public void showAllHiddenRows() {
         mVisibilityHandler.showAllHiddenRows();
     }
@@ -562,6 +572,13 @@ public class TableView extends FrameLayout implements ITableView {
     @Override
     public void hideColumn(int column) {
         mVisibilityHandler.hideColumn(column);
+    }
+
+    @Override
+    public void hideColumns(List<Integer> columns)
+    {
+        Collections.sort(columns);
+        mVisibilityHandler.hideSortedColumns(columns);
     }
 
     @Override

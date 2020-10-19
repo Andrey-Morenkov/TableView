@@ -40,6 +40,8 @@ import com.evrencoskun.tableview.listener.scroll.HorizontalRecyclerViewListener;
 import com.evrencoskun.tableview.listener.scroll.VerticalRecyclerViewListener;
 import com.evrencoskun.tableview.sort.SortState;
 
+import java.util.List;
+
 /**
  * Created by evrencoskun on 19/06/2017.
  */
@@ -120,6 +122,8 @@ public interface ITableView {
 
     void hideRow(int row);
 
+    void hideRows(List<Integer> rows);
+
     boolean isRowVisible(int row);
 
     void showAllHiddenRows();
@@ -129,6 +133,8 @@ public interface ITableView {
     void showColumn(int column);
 
     void hideColumn(int column);
+
+    void hideColumns(List<Integer> columns);
 
     boolean isColumnVisible(int column);
 
