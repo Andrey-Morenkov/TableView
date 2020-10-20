@@ -273,13 +273,14 @@ public class CellRecyclerViewAdapter<C> extends AbstractRecyclerViewAdapter<C> {
 
         // Lets change the model list silently
         // Create a new list which the column is already removed.
+        List<Integer> colCopy = new ArrayList<>(columns);
         List<List<C>> cellItems = new ArrayList<>();
         for (int i = 0; i < mItemList.size(); i++) {
             List<C> rowList = new ArrayList<>((List<C>) mItemList.get(i));
             Log.e("CellRVAdapter", "get " + i + " row (" + rowList.size() + ") in item list");
 
-            Collections.reverse(columns);
-            for (int colToRemove: columns) {
+            Collections.reverse(colCopy);
+            for (int colToRemove: colCopy) {
                 try {
                     rowList.remove(colToRemove);
                     Log.e("CellRVAdapter", "remove " + colToRemove + " column");
