@@ -101,13 +101,16 @@ public abstract class AbstractRecyclerViewAdapter<T> extends RecyclerView
         Collections.reverse(positions);
 
         int currPositionsPos = 0;
+        Log.e("AbstractRVAdapter", "deleteSortedItems: positionsSize = " + positions.size() + ", mItemList.size() = " + mItemList.size());
         for (int i = mItemList.size() - 1; i >= 0; i--) {
+            Log.e("AbstractRVAdapter", "i = " + i + ", pos = " + positions.get(currPositionsPos));
             if (i == positions.get(currPositionsPos)) {
                 mItemList.remove(i);
                 Log.e("AbstractRVAdapter", "remove item " + i);
                 notifyItemRemoved(i);
                 currPositionsPos++;
                 if (currPositionsPos == positions.size()) {
+                    Log.e("AbstractRVAdapter", "break!!1");
                     break;
                 }
             }
