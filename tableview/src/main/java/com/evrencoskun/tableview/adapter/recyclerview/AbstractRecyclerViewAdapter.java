@@ -99,6 +99,7 @@ public abstract class AbstractRecyclerViewAdapter<T> extends RecyclerView
 
     public void deleteSortedItems(List<Integer> positions) {
         Collections.reverse(positions);
+        Log.e("AbstractRVAdapter", "reversed: " + positions.toString());
 
         int currPositionsPos = 0;
         Log.e("AbstractRVAdapter", "deleteSortedItems: positionsSize = " + positions.size() + ", mItemList.size() = " + mItemList.size());
