@@ -259,6 +259,11 @@ public abstract class AbstractTableAdapter<CH, RH, C> implements ITableAdapter<C
         mRowHeaderRecyclerViewAdapter.addItem(rowPosition, rowHeaderItem);
     }
 
+    public void addSortedRows(Map<Integer, RH> sortedRowHeaderItems, Map<Integer, List<C>> sortedColumnCellItems) {
+        mRowHeaderRecyclerViewAdapter.addItems(sortedRowHeaderItems);
+        mCellRecyclerViewAdapter.addItems(sortedColumnCellItems);
+    }
+
     public void addRowRange(int rowPositionStart, @Nullable List<RH> rowHeaderItem, @Nullable List<List<C>> cellItems) {
         mRowHeaderRecyclerViewAdapter.addItemRange(rowPositionStart, rowHeaderItem);
         mCellRecyclerViewAdapter.addItemRange(rowPositionStart, cellItems);
@@ -302,11 +307,8 @@ public abstract class AbstractTableAdapter<CH, RH, C> implements ITableAdapter<C
     }
 
     public void removeSortedColumns(List<Integer> columnsPositions) {
-        Log.e("AbstractTAdapter", "removing column headers...");
         mColumnHeaderRecyclerViewAdapter.deleteSortedItems(columnsPositions);
-        Log.e("AbstractTAdapter", "removing cells...");
         mCellRecyclerViewAdapter.removeSortedColumnItems(columnsPositions);
-        Log.e("AbstractTAdapter", "removeSortedColumns DONE");
     }
 
     public void addColumn(int columnPosition, @Nullable CH columnHeaderItem, @NonNull List<C> cellItems) {
@@ -315,11 +317,8 @@ public abstract class AbstractTableAdapter<CH, RH, C> implements ITableAdapter<C
     }
 
     public void addSortedColumns(Map<Integer, CH> sortedColumnHeaderItems, Map<Integer, List<C>> sortedColumnCellItems) {
-        Log.e("AbstractTAdapter", "adding column headers...");
         mColumnHeaderRecyclerViewAdapter.addItems(sortedColumnHeaderItems);
-        Log.e("AbstractTAdapter", "adding cells...");
         mCellRecyclerViewAdapter.addColumnsItems(sortedColumnCellItems);
-        Log.e("AbstractTAdapter", "addSortedColumns DONE");
     }
 
 

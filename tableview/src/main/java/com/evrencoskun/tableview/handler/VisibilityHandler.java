@@ -99,17 +99,49 @@ public class VisibilityHandler {
         }
     }
 
+    private void showSortedRows(List<Integer> rows) {
+        showSortedRows(rows, true);
+    }
+
+    private void showSortedRows(List<Integer> rows, boolean removeFromList) {
+        TreeMap<Integer, Object> hiddenRowsHeaderInfo = new TreeMap<>();
+        TreeMap<Integer, List<Object>> hiddenRowsCellsInfo = new TreeMap<>();
+
+        for (int row: rows) {
+            Row hiddenRow = mHideRowList.get(row);
+            if (hiddenRow != null) {
+                hiddenRowsHeaderInfo.put(row, hiddenRow.getRowHeaderModel());
+                hiddenRowsCellsInfo.put(row, hiddenRow.getCellModelList());
+            } else {
+                Log.e(LOG_TAG, "This row (" + row + ") is already visible.");
+            }
+        }
+
+        // add columns model to the adapter
+        mTableView.getAdapter().addSortedRows(hiddenRowsHeaderInfo, hiddenRowsCellsInfo);
+
+        if (removeFromList) {
+            Collections.reverse(rows);
+            for (int row: rows) {
+                mHideRowList.remove(row);
+            }
+        }
+    }
+
     public void clearHideRowList() {
         mHideRowList.clear();
     }
 
     public void showAllHiddenRows() {
-        Log.e(LOG_TAG, "show all hidden rows (" + mHideRowList.size() + ")");
+        List<Integer> rowsToShow = new ArrayList<>(mHideRowList.size());
         for (int i = 0; i < mHideRowList.size(); i++) {
-            int row = mHideRowList.keyAt(i);
-            showRow(row, false);
+            rowsToShow.add(mHideRowList.keyAt(i));
         }
 
+        Log.d(LOG_TAG, "show all hidden rows (" + rowsToShow.size() + ")");
+
+        Collections.sort(rowsToShow);
+        showSortedRows(rowsToShow, false);
         clearHideRowList();
     }
 
@@ -206,7 +238,7 @@ public class VisibilityHandler {
             columnsToShow.add(mHideColumnList.keyAt(i));
         }
 
-        Log.e(LOG_TAG, "show all hidden columns (" + columnsToShow.size() + ")");
+        Log.d(LOG_TAG, "show all hidden columns (" + columnsToShow.size() + ")");
 
         Collections.sort(columnsToShow);
         showSortedColumns(columnsToShow, false);

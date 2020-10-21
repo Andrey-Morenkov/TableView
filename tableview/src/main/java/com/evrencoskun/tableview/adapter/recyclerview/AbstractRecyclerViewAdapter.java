@@ -97,28 +97,6 @@ public abstract class AbstractRecyclerViewAdapter<T> extends RecyclerView
         }
     }
 
-    public void deleteSortedItems(List<Integer> positions) {
-        List<Integer> copyList = new ArrayList<>(positions);
-        Collections.reverse(copyList);
-        Log.e("AbstractRVAdapter", "reversed: " + copyList.toString());
-
-        int currPositionsPos = 0;
-        Log.e("AbstractRVAdapter", "deleteSortedItems: positionsSize = " + copyList.size() + ", mItemList.size() = " + mItemList.size());
-        for (int i = mItemList.size() - 1; i >= 0; i--) {
-            Log.e("AbstractRVAdapter", "i = " + i + ", pos = " + copyList.get(currPositionsPos));
-            if (i == copyList.get(currPositionsPos)) {
-                mItemList.remove(i);
-                Log.e("AbstractRVAdapter", "remove item " + i);
-                notifyItemRemoved(i);
-                currPositionsPos++;
-                if (currPositionsPos == copyList.size()) {
-                    Log.e("AbstractRVAdapter", "break!!1");
-                    break;
-                }
-            }
-        }
-    }
-
     public void deleteItemRange(int positionStart, int itemCount) {
         for (int i = positionStart + itemCount - 1; i >= positionStart; i--) {
             if (i != RecyclerView.NO_POSITION) {
@@ -136,10 +114,26 @@ public abstract class AbstractRecyclerViewAdapter<T> extends RecyclerView
         }
     }
 
+    public void deleteSortedItems(List<Integer> positions) {
+        List<Integer> copyList = new ArrayList<>(positions);
+        Collections.reverse(copyList);
+
+        int currPositionsPos = 0;
+        for (int i = mItemList.size() - 1; i >= 0; i--) {
+            if (i == copyList.get(currPositionsPos)) {
+                mItemList.remove(i);
+                notifyItemRemoved(i);
+                currPositionsPos++;
+                if (currPositionsPos == copyList.size()) {
+                    break;
+                }
+            }
+        }
+    }
+
     public void addItems(Map<Integer, T> positionsWithItems) {
         for (Map.Entry<Integer, T> positionAndItem: positionsWithItems.entrySet()) {
             if (positionAndItem.getKey() != RecyclerView.NO_POSITION) {
-                Log.e("AbstractRVAdapter", "add item (" + positionAndItem.getKey() + ")");
                 mItemList.add(positionAndItem.getKey(), positionAndItem.getValue());
                 notifyItemInserted(positionAndItem.getKey());
             }
