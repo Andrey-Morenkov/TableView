@@ -327,7 +327,11 @@ public class CellRecyclerViewAdapter<C> extends AbstractRecyclerViewAdapter<C> {
     }
 
     public void addColumnsItems(Map<Integer, List<C>> cellColumnsInfo) {
-        List<C> firstColumnInfo = cellColumnsInfo.values().iterator().next();
+        List<C> firstColumnInfo = null;
+        for (Map.Entry<Integer, List<C>> item: cellColumnsInfo.entrySet()) {
+            firstColumnInfo = item.getValue();
+            break;
+        }
 
         // It should be same size with exist model list.
         if (firstColumnInfo.size() != mItemList.size() || firstColumnInfo.contains(null)) {
