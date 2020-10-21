@@ -258,7 +258,6 @@ public class CellRecyclerViewAdapter<C> extends AbstractRecyclerViewAdapter<C> {
 
         CellRecyclerView[] visibleRecyclerViews = mTableView.getCellLayoutManager().getVisibleCellRowRecyclerViews();
 
-        int k = 0;
         for (CellRecyclerView cellRowRecyclerView : visibleRecyclerViews) {
             if (cellRowRecyclerView != null) {
                 AbstractRecyclerViewAdapter adapter = (AbstractRecyclerViewAdapter) cellRowRecyclerView.getAdapter();
@@ -266,7 +265,6 @@ public class CellRecyclerViewAdapter<C> extends AbstractRecyclerViewAdapter<C> {
                     adapter.deleteSortedItems(columns);
                 }
             }
-            k++;
         }
 
         // Lets change the model list silently
@@ -277,6 +275,7 @@ public class CellRecyclerViewAdapter<C> extends AbstractRecyclerViewAdapter<C> {
             List<C> rowList = new ArrayList<>((List<C>) mItemList.get(i));
 
             Collections.reverse(colCopy);
+            Log.e("CellRecyclerViewAdapter", "colCopy after reverse: " + colCopy.toString());
             for (int colToRemove: colCopy) {
                 try {
                     rowList.remove(colToRemove);
