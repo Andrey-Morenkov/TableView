@@ -333,6 +333,11 @@ public class CellRecyclerViewAdapter<C> extends AbstractRecyclerViewAdapter<C> {
             break;
         }
 
+        if (firstColumnInfo == null) {
+            Log.w("CellRVAdapter", "nothing to add, skip");
+            return;
+        }
+
         // It should be same size with exist model list.
         if (firstColumnInfo.size() != mItemList.size() || firstColumnInfo.contains(null)) {
             Log.e("CellRVAdapter", "firstColumnInfo.size() = " + firstColumnInfo.size() + " != " + mItemList.size());
